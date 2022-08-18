@@ -1,6 +1,5 @@
 public with sharing class GoogleCloudAPI {
-    private static final String AUTH_URL = 'https://www.googleapis.com/oauth2/v4/token';
-    private static final String AUDIENCE_OAUTH = 'https://oauth2.googleapis.com/token';
+    private static final String AUTH_URL = 'https://oauth2.googleapis.com/token';
     private static Integer TOKEN_VALIDITY_PERIOD = 3600;
     private Google_Cloud_Connection_Setting__mdt connectionSetting;
     private Map<String, Object> additionalClaims;
@@ -43,7 +42,7 @@ public with sharing class GoogleCloudAPI {
     public String generateAccessToken(){
         if(this.connectionSetting != NULL){
             Auth.JWT jwt = new Auth.JWT();
-            jwt.setAud(AUDIENCE_OAUTH);
+            jwt.setAud(AUTH_URL);
             jwt.setIss(connectionSetting.Service_Account_Email__c);
             jwt.setValidityLength(TOKEN_VALIDITY_PERIOD);
 
