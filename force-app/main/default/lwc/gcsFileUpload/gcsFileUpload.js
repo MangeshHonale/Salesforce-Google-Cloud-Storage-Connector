@@ -1,14 +1,33 @@
-import { LightningElement } from 'lwc';
-import getGoogleCloudAPIAccessToken from '@salesforce/apex/GoogleCloudStorageFileUploadController.getAccessToken';
+import { LightningElement, api } from 'lwc';
 
 export default class GcsFileUpload extends LightningElement {
     _accessToken;
-    connectedCallback(){
-        getGoogleCloudAPIAccessToken().
-        then(token => {
-            this._accessToken = token;
-        });
+    _BUCKET_NAME; //Corrosponds to org id
+    _FOLDER_NAME; //Corrosponds to object name on which component is placed
+
+    @api
+    setAccessToken(apiToken){
+        this._accessToken = apiToken;
     }
+
+    @api
+    get bucketName(){
+        return null;
+    }
+
+    set bucketName(value){
+        this._BUCKET_NAME = value;
+    }
+
+    @api
+    get folderName(){
+        return null;
+    }
+
+    set folderName(value){
+        this._FOLDER_NAME = value;
+    }
+  
     handleClick(){
         let files = this.template.querySelector('input').files;
         console.log('---' + files[0].name);
@@ -28,25 +47,5 @@ export default class GcsFileUpload extends LightningElement {
         .then((data) => {
             console.log('@@@' + JSON.stringify(data));
         });
-
-        /*const myRequest = new Request('https://github.com/MangeshHonale', {
-                            method: 'GET',
-                            headers: {
-                                'mode': 'cors'
-                            }
-                        });
-        fetch(myRequest)
-            .then(response => {
-                console.log(response);
-                if(response.ok) {
-                    return response.json();
-                } else {
-                    throw Error(response);
-                }
-            })
-            .then(githubUser => {
-                console.log('###' + JSON.stringify(githubUser));
-            })
-            .catch(error => console.log(error))*/
     }
 }

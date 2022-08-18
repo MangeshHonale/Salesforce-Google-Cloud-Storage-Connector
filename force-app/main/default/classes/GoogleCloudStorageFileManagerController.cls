@@ -1,4 +1,4 @@
-public with sharing class GoogleCloudStorageFileUploadController {
+public with sharing class GoogleCloudStorageFileManagerController {
     private static final String CONNECTION_SETTING_DEV_NAME = 'My_Google_Cloud';
 
     @AuraEnabled
