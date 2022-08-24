@@ -2,12 +2,13 @@ import { LightningElement, api } from 'lwc';
 
 export default class GcsFileList extends LightningElement {
     _accessToken;
-    _BUCKET_NAME; //Corrosponds to org id
-    _FOLDER_NAME; //Corrosponds to object name on which component is placed
+    _bucketName = 'salesforce_attachment_bucket'; //Corrosponds to org id
+    _prefix; //Corrosponds to object id on which component is placed
 
     @api
-    setAccessToken(apiToken){
+    loadFiles(apiToken){
         this._accessToken = apiToken;
+        this.fetchCloudStorageFiles();
     }
 
     @api
@@ -16,7 +17,7 @@ export default class GcsFileList extends LightningElement {
     }
 
     set bucketName(value){
-        this._BUCKET_NAME = value;
+        this._bucketName = value;
     }
 
     @api
@@ -25,6 +26,23 @@ export default class GcsFileList extends LightningElement {
     }
 
     set folderName(value){
-        this._FOLDER_NAME = value;
+        this._prefix = value + '/';
+    }
+
+    fetchCloudStorageFiles(){
+        //let resourceURL = 'https://storage.googleapis.com/storage/v1/b/' + this._bucketName + '/o?prefix=' + this._prefix;
+        let resourceURL = 'https://storage.googleapis.com/storage/v1/b/' + this._bucketName + '/o';
+        fetch(resourceURL, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + this._accessToken
+            }
+        })
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            console.log('@@@' + JSON.stringify(data));
+        });
     }
 }
