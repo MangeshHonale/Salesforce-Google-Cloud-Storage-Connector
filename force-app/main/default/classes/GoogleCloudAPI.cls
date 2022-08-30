@@ -4,15 +4,23 @@ public with sharing class GoogleCloudAPI {
     private Google_Cloud_Connection_Setting__mdt connectionSetting;
     private Map<String, Object> additionalClaims;
 
+    public class CloudStorage{
+        @AuraEnabled
+        public String bucketName;
+        @AuraEnabled
+        public String accessToken;
+    }
+
     public GoogleCloudAPI() {
         List<Google_Cloud_Connection_Setting__mdt> connectionSettingList = [SELECT Service_Account_Email__c, 
                                                                                 JKS_Certificate_Dev_Name__c,
                                                                                 Token_Validity_Length__c,
+                                                                                Bucket_Name__c,
                                                                                 (SELECT Scope_URL__c
                                                                                 FROM Google_Cloud_API_Scopes__r
                                                                                 WHERE Active__c = TRUE)
                                                                             FROM Google_Cloud_Connection_Setting__mdt
-                                                                            AND Active__c = TRUE 
+                                                                            WHERE Active__c = TRUE 
                                                                             LIMIT 1];
         if(!connectionSettingList.isEmpty()){
             this.connectionSetting = connectionSettingList.get(0);
@@ -58,5 +66,17 @@ public with sharing class GoogleCloudAPI {
         }else{
             return null;
         }  
+    }
+
+    public CloudStorage authenticate(){
+        if(this.connectionSetting != NULL){
+            CloudStorage gcs = new CloudStorage();
+            gcs.bucketName = this.connectionSetting.Bucket_Name__c;
+            gcs.accessToken = this.generateAccessToken();
+            return gcs;
+        }else{
+            //throw exception
+            return null;
+        }
     }
 }

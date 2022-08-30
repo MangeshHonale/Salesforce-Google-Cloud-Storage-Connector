@@ -1,11 +1,10 @@
 public with sharing class GoogleCloudStorageFileManagerController {
-    private static final String CONNECTION_SETTING_DEV_NAME = 'My_Google_Cloud';
 
     @AuraEnabled
-    public static string getAccessToken(){
+    public static GoogleCloudAPI.CloudStorage setupConnection(){
         try {
-            GoogleCloudAPI gcAPI = new GoogleCloudAPI(CONNECTION_SETTING_DEV_NAME);
-            return gcAPI.generateAccessToken();
+            GoogleCloudAPI gcAPI = new GoogleCloudAPI();
+            return gcAPI.authenticate();
             
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
